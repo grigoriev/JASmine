@@ -2,39 +2,22 @@ version: "3.4"
 
 services:
 
+  jasmine-service:
+    image: jboss/wildfly
+    container_name: jasmine-service-dev
+    hostname: jasmine-service-dev
+    depends_on:
+      - jasmine-database
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env.dev
+
   jasmine-database:
     image: mysql:5.7
     container_name: jasmine-db-dev
     hostname: jasmine-db-dev
     ports:
       - "3306:3306"
-    environment:
-      - MYSQL_DATABASE=jasminedb
-      - MYSQL_USER=jasmineuser
-      - MYSQL_PASSWORD=jasminepassword
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
-
-  liquibase:
-    image: freshbooks/liquibase-mysql:2.0.5
-    container_name: jasmine-liquibase-dev
-    hostname: jasmine-liquibase-dev
-    restart: on-failure
-    links:
-      - jasmine-database
-    environment:
-      - MYSQL_HOST=jasmine-db-dev
-      - MYSQL_PORT=3306
-      - MYSQL_USER=jasmineuser
-      - MYSQL_PASSWORD=jasminepassword
-      - TARGET_DATABASE=jasminedb
-    volumes:
-      - ./db/:/changelogs/
-
-  jasmine-service:
-    image: jboss/wildfly
-    container_name: jasmine-service-dev
-    hostname: jasmine-service-dev
-    links:
-      - jasmine-database
-    ports:
-      - "8080:8080"
+    env_file:
+      - .env.dev
