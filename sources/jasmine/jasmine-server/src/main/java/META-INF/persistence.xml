@@ -5,7 +5,7 @@
              version="2.2">
 
     <persistence-unit name="JASminePersistenceUnit">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <jta-data-source>jdbc:/JASmineDS</jta-data-source>
 
         <class>eu.grigoriev.jasmine.persistence.ApplicationEntity</class>
         <class>eu.grigoriev.jasmine.persistence.RoleEntity</class>
@@ -14,14 +14,12 @@
         <class>eu.grigoriev.jasmine.persistence.UserPropertyEntity</class>
 
         <properties>
-            <!--property name="hibernate.ejb.cfgfile" value="/hibernate.cfg.xml" /-->
-
-            <!--property name="hibernate.connection.url" value="jdbc:mysql://172.18.0.2:3306/jasminedb"/>
-            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
-            <property name="hibernate.archive.autodetection" value="class"/>
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
-            <property name="hbm2ddl.auto" value="update"/-->
+            <property name="hbm2ddl.auto" value="validate"/>
+            <property name="hibernate.current_session_context_class" value="thread"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL57Dialect"/>
+            <property name="hibernate.enable_lazy_load_no_trans" value="true"/>
+            <property name="hibernate.format_sql" value="false"/>
+            <property name="hibernate.show_sql" value="false"/>
         </properties>
     </persistence-unit>
 </persistence>
