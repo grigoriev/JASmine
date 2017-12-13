@@ -12,6 +12,13 @@ services:
       - "8080:8080"
     env_file:
       - .env.dev
+    volumes:
+      - ./docker/wildfly/.bin/:/opt/jboss/.bin/
+    entrypoint: [
+      "/bin/sh",
+      "-c",
+      "chmod +x /opt/jboss/.bin/*.sh && /opt/jboss/.bin/entrypoint.sh"
+    ]
 
   jasmine-database:
     image: mysql:5.7
