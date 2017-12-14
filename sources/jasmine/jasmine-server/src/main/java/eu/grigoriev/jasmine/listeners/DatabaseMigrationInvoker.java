@@ -1,4 +1,4 @@
-package eu.grigoriev.jasmine.listener;
+package eu.grigoriev.jasmine.listeners;
 
 import liquibase.Liquibase;
 import liquibase.database.Database;

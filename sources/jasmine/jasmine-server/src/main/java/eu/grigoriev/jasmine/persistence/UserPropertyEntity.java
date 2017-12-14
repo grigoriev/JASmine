@@ -9,6 +9,7 @@ public class UserPropertyEntity {
     private long id;
     private String property;
     private String value;
+    private UserEntity userEntity;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -40,6 +41,16 @@ public class UserPropertyEntity {
         this.value = value;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    public UserEntity getUserEntity() {
+        return userEntity;
+    }
+
+    public void setUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -47,12 +58,13 @@ public class UserPropertyEntity {
         UserPropertyEntity that = (UserPropertyEntity) o;
         return id == that.id &&
                 Objects.equals(property, that.property) &&
-                Objects.equals(value, that.value);
+                Objects.equals(value, that.value) &&
+                Objects.equals(userEntity, that.userEntity);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, property, value);
+        return Objects.hash(id, property, value, userEntity);
     }
 }
