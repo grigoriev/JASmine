@@ -44,12 +44,6 @@
         </dependency>
 
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.45</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>3.5.3</version>
@@ -62,9 +56,9 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.ejb</groupId>
-            <artifactId>javax.ejb-api</artifactId>
-            <version>3.2</version>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -77,6 +71,7 @@
                 <configuration>
                     <warName>${project.build.finalName}</warName>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <outputDirectory>../../dist</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>

@@ -5,7 +5,7 @@
              version="2.2">
 
     <persistence-unit name="JASminePersistenceUnit">
-        <jta-data-source>jdbc:/JASmineDS</jta-data-source>
+        <jta-data-source>java:/JASmineDS</jta-data-source>
 
         <class>eu.grigoriev.jasmine.persistence.ApplicationEntity</class>
         <class>eu.grigoriev.jasmine.persistence.RoleEntity</class>
