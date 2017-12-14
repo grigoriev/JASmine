@@ -11,7 +11,7 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - .env.dev
+      - docker/.env-database
     volumes:
       - ./docker/wildfly/bin/:/opt/jboss/dist/bin/
       - ./dist/:/opt/jboss/dist/delivery/
@@ -28,4 +28,4 @@ services:
     ports:
       - "3306:3306"
     env_file:
-      - .env.dev
+      - docker/.env-database
