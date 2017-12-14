@@ -47,7 +47,13 @@ else
     echo "$DATASOURCE_NAME has been already added"
 fi
 
-echo "creating symlinks to $WILDFLY_DEPLOYMENTS..."
-find "$DIST_DELIVERY" -maxdepth 1 -name "*.war" -print -exec ln -sfn {} "$WILDFLY_DEPLOYMENTS" \;
+for WAR in $(find "$DIST_DELIVERY" -maxdepth 1 -name "*.war")
+do
+    FILENAME=$(basename "$WAR")
+
+    echo "creating symlink from $WAR to $WILDFLY_DEPLOYMENTS and marker file $FILENAME.dodeploy"
+    ln -sfn "$WAR" "$WILDFLY_DEPLOYMENTS"
+    touch "$WILDFLY_DEPLOYMENTS/$FILENAME.dodeploy"
+done
 
 echo "`basename "$0"` executed successfully"
