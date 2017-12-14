@@ -13,11 +13,12 @@ services:
     env_file:
       - .env.dev
     volumes:
-      - ./docker/wildfly/.bin/:/opt/jboss/.bin/
+      - ./docker/wildfly/bin/:/opt/jboss/dist/bin/
+      - ./dist/:/opt/jboss/dist/delivery/
     entrypoint: [
       "/bin/sh",
       "-c",
-      "chmod +x /opt/jboss/.bin/*.sh && /opt/jboss/.bin/entrypoint.sh"
+      "chmod +x /opt/jboss/dist/bin/*.sh && /opt/jboss/dist/bin/entrypoint.sh"
     ]
 
   jasmine-database:
