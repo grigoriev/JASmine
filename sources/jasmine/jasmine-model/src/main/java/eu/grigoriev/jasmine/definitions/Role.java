@@ -1,6 +1,6 @@
-package eu.grigoriev.jasmine.model;
+package eu.grigoriev.jasmine.definitions;
 
-public class Roles {
+public class Role {
     public static final String USER = "user";
     public static final String ADMINISTRATOR = "administrator";
 }

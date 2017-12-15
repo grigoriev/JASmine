@@ -1,4 +1,4 @@
-package eu.grigoriev.jasmine.repositories;
+package eu.grigoriev.jasmine.repositories.common;
 
 import java.io.Serializable;
 import java.util.List;

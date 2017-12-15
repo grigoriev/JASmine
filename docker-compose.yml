@@ -13,8 +13,8 @@ services:
     env_file:
       - docker/.env-database
     volumes:
-      - ./docker/wildfly/bin/:/opt/jboss/dist/bin/
-      - ./dist/:/opt/jboss/dist/delivery/
+      - ${PWD}/docker/wildfly/bin/:/opt/jboss/dist/bin/
+      - ${PWD}/sources/jasmine/jasmine-server/target/jasmine.war:/opt/jboss/dist/delivery/jasmine.war
     entrypoint: [
       "/bin/sh",
       "-c",

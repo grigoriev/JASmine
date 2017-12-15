@@ -1,7 +1,6 @@
 package eu.grigoriev.jasmine.services;
 
-import eu.grigoriev.jasmine.model.status.State;
-import eu.grigoriev.jasmine.model.status.Status;
+import eu.grigoriev.jasmine.model.Token;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.security.PermitAll;
@@ -13,14 +12,14 @@ import java.util.UUID;
 
 @Slf4j
 @Path("/session")
-public class Session {
+public class SessionService {
 
     @POST
+    @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
-    public String create(
-            @QueryParam("username") String username,
-            @QueryParam("password") String encodedPassword
-
+    public Token create(
+            @QueryParam("username") final String username,
+            @QueryParam("password") final String encodedPassword
     ) {
         String password = new String(Base64.getDecoder().decode(encodedPassword), StandardCharsets.UTF_8);
 
@@ -30,18 +29,13 @@ public class Session {
 
         // save token ID to the db
 
-        String token = "";
-
-        return token;
+        return new Token();
     }
 
     @PermitAll
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public State close() {
+    public void close(final Token token) {
 
-        // delete token ID from the db
-
-        return new State(Status.OK);
     }
 }

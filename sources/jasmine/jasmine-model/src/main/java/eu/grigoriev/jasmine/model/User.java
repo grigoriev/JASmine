@@ -1,13 +1,11 @@
-package eu.grigoriev.jasmine.model.account;
+package eu.grigoriev.jasmine.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class User {

@@ -1,4 +1,4 @@
-package eu.grigoriev.jasmine.repositories;
+package eu.grigoriev.jasmine.repositories.common;
 
 import org.apache.log4j.Logger;
 
