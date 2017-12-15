@@ -3,7 +3,6 @@ package eu.grigoriev.jasmine.services;
 import eu.grigoriev.jasmine.definitions.Role;
 import eu.grigoriev.jasmine.exceptions.EntityAlreadyExistsException;
 import eu.grigoriev.jasmine.exceptions.EntityNotFoundException;
-import eu.grigoriev.jasmine.mappers.dto.RoleMapper;
 import eu.grigoriev.jasmine.mappers.dto.UserMapper;
 import eu.grigoriev.jasmine.model.User;
 import eu.grigoriev.jasmine.persistence.ApplicationEntity;
