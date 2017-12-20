@@ -5,96 +5,118 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-    <changeSet id="001-create-table-application" author="Sergey Grigoriev">
-        <createTable tableName="application">
-            <column name="name" type="varchar(255)">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="description" type="varchar(1024)">
-                <constraints nullable="true"/>
-            </column>
+    <changeSet id="001-create-table-service" author="Sergey Grigoriev">
+        <createTable tableName="service">
+            <column name="name" type="varchar(255)"/>
+            <column name="description" type="varchar(1024)"/>
         </createTable>
+
+        <addPrimaryKey tableName="service" columnNames="name"/>
     </changeSet>
 
     <changeSet id="002-create-table-user" author="Sergey Grigoriev">
         <createTable tableName="user">
-            <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="application_name" type="varchar(255)"/>
-            <column name="username" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="password" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="service_name" type="varchar(255)"/>
+            <column name="username" type="varchar(255)"/>
+            <column name="password" type="varchar(255)"/>
             <column name="active" type="boolean" defaultValueBoolean="true"/>
         </createTable>
 
-        <addForeignKeyConstraint
-                constraintName="fk#user:application_name"
-                baseTableName="user" baseColumnNames="application_name"
-                referencedTableName="application" referencedColumnNames="name"
-        />
+        <addPrimaryKey tableName="user" columnNames="service_name, username"/>
 
-        <addUniqueConstraint
-                tableName="user"
-                columnNames="application_name, username"
-                constraintName="uc_application_user"
+        <addForeignKeyConstraint
+                baseTableName="user"
+                baseColumnNames="service_name"
+                constraintName="fk#user:service_name"
+                referencedTableName="service"
+                referencedColumnNames="name"
         />
     </changeSet>
 
     <changeSet id="003-create-table-user_property" author="Sergey Grigoriev">
         <createTable tableName="user_property">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="user_id" type="varchar(36)">
-                <constraints foreignKeyName="fk#user_property:user_id" references="user(id)"/>
-            </column>
-            <column name="property" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="value" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="id" type="bigint"/>
+            <column name="service_name" type="varchar(255)"/>
+            <column name="username" type="varchar(255)"/>
+            <column name="property" type="varchar(255)"/>
+            <column name="value" type="varchar(255)"/>
         </createTable>
+
+        <addPrimaryKey tableName="user_property" columnNames="id"/>
+
+        <addForeignKeyConstraint
+                baseTableName="user_property"
+                baseColumnNames="service_name, username"
+                constraintName="fk#user_property:user_id"
+                referencedTableName="user"
+                referencedColumnNames="service_name, username"
+        />
     </changeSet>
 
 
     <changeSet id="004-create-table-role" author="Sergey Grigoriev">
         <createTable tableName="role">
-            <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="role" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="service_name" type="varchar(255)"/>
+            <column name="role" type="varchar(255)"/>
+            <column name="default_assignment" type="boolean" defaultValueBoolean="false"/>
+            <column name="description" type="varchar(1024)"/>
         </createTable>
+
+        <addPrimaryKey tableName="role" columnNames="service_name, role"/>
+
+        <addForeignKeyConstraint
+                baseTableName="role"
+                baseColumnNames="service_name"
+                constraintName="fk#role:service_name"
+                referencedTableName="service"
+                referencedColumnNames="name"
+        />
     </changeSet>
 
     <changeSet id="005-many-to-many-user_role" author="Sergey Grigoriev">
         <createTable tableName="user_role">
-            <column name="user_id" type="varchar(36)">
-                <constraints foreignKeyName="fk#user_role:user_id" references="user(id)"/>
-            </column>
-            <column name="role_id" type="varchar(36)">
-                <constraints foreignKeyName="fk#user_role:role_id" references="role(id)"/>
-            </column>
+            <column name="id" type="bigint"/>
+            <column name="user_service_name" type="varchar(255)"/>
+            <column name="username" type="varchar(255)"/>
+            <column name="role_service_name" type="varchar(255)"/>
+            <column name="role" type="varchar(255)"/>
         </createTable>
+
+        <addPrimaryKey tableName="user_role" columnNames="id"/>
+
+        <addForeignKeyConstraint
+                baseTableName="user_role"
+                baseColumnNames="user_service_name, username"
+                constraintName="fk#user_role:user_id"
+                referencedTableName="user"
+                referencedColumnNames="service_name, username"
+        />
+
+        <addForeignKeyConstraint
+                baseTableName="user_role"
+                baseColumnNames="role_service_name, role"
+                constraintName="fk#user_role:role_id"
+                referencedTableName="role"
+                referencedColumnNames="service_name, role"
+        />
     </changeSet>
 
     <changeSet id="006-create-table-token" author="Sergey Grigoriev">
         <createTable tableName="token">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="user_id" type="varchar(36)">
-                <constraints foreignKeyName="fk#token:user_id" references="user(id)"/>
-            </column>
-            <column name="token" type="varchar(64)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="id" type="varchar(36)"/>
+            <column name="service_name" type="varchar(255)"/>
+            <column name="username" type="varchar(255)"/>
+            <column name="jwt" type="varchar(4096)"/>
         </createTable>
+
+        <addPrimaryKey tableName="token" columnNames="id"/>
+
+        <addForeignKeyConstraint
+                baseTableName="token"
+                baseColumnNames="service_name, username"
+                constraintName="fk#token:user_id"
+                referencedTableName="user"
+                referencedColumnNames="service_name, username"
+        />
     </changeSet>
 </databaseChangeLog>

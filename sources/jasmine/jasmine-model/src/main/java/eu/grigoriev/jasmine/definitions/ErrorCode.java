@@ -2,7 +2,8 @@ package eu.grigoriev.jasmine.definitions;
 
 public enum ErrorCode {
     NOT_FOUND(2001),
-    ALREADY_EXISTS(2002);
+    ALREADY_EXISTS(2002),
+    UNAUTHORIZED(4001);
 
     private int value;
 

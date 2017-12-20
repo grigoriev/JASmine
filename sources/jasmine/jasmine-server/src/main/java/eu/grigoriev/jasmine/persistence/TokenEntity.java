@@ -1,46 +1,31 @@
 package eu.grigoriev.jasmine.persistence;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.Objects;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "token")
 public class TokenEntity {
-    private long id;
-    private String token;
 
     @Id
-    @Column(name = "id", nullable = false)
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
+    @Column(name = "id", nullable = false, length = 36)
+    private String id;
 
     @Basic
-    @Column(name = "token", nullable = false, length = 64)
-    public String getToken() {
-        return token;
-    }
+    @Column(name = "jwt", nullable = false, length = 4096)
+    private String jwt;
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TokenEntity that = (TokenEntity) o;
-        return id == that.id &&
-                Objects.equals(token, that.token);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(id, token);
-    }
+    @OneToOne
+    @JoinColumns({
+            @JoinColumn(name = "service_name", referencedColumnName = "service_name"),
+            @JoinColumn(name = "username", referencedColumnName = "username")
+    })
+    private UserEntity userEntity;
 }

@@ -1,4 +1,4 @@
-package eu.grigoriev.jasmine.exceptions;
+package eu.grigoriev.jasmine.exceptions.application;
 
 import eu.grigoriev.jasmine.definitions.ErrorCode;
 

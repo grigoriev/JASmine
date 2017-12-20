@@ -1,14 +1,12 @@
 package eu.grigoriev.jasmine.services;
 
 import eu.grigoriev.jasmine.definitions.Role;
-import eu.grigoriev.jasmine.exceptions.EntityAlreadyExistsException;
-import eu.grigoriev.jasmine.exceptions.EntityNotFoundException;
+import eu.grigoriev.jasmine.exceptions.application.EntityAlreadyExistsException;
+import eu.grigoriev.jasmine.exceptions.application.EntityNotFoundException;
 import eu.grigoriev.jasmine.mappers.dto.UserMapper;
 import eu.grigoriev.jasmine.model.User;
-import eu.grigoriev.jasmine.persistence.ApplicationEntity;
-import eu.grigoriev.jasmine.persistence.RoleEntity;
-import eu.grigoriev.jasmine.persistence.UserEntity;
-import eu.grigoriev.jasmine.repositories.ApplicationRepository;
+import eu.grigoriev.jasmine.persistence.*;
+import eu.grigoriev.jasmine.repositories.ServiceRepository;
 import eu.grigoriev.jasmine.repositories.RoleRepository;
 import eu.grigoriev.jasmine.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +18,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -27,7 +26,7 @@ import java.util.UUID;
 public class AccountService {
 
     @EJB
-    private ApplicationRepository applicationRepository;
+    private ServiceRepository serviceRepository;
 
     @EJB
     private UserRepository userRepository;
@@ -38,31 +37,26 @@ public class AccountService {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public User register(
-            @QueryParam("application") final String application,
+            @QueryParam("service") final String service,
             @QueryParam("username") final String username,
             @QueryParam("password") final String password
     ) throws EntityNotFoundException, EntityAlreadyExistsException {
-        ApplicationEntity applicationEntity = applicationRepository.find(application);
-        if (applicationEntity == null) {
-            throw new EntityNotFoundException("application '" + application + "' not found");
+        ServiceEntity serviceEntity = serviceRepository.get(service)
+                .orElseThrow(() -> new EntityNotFoundException("service '" + service + "' not found"));
+
+        Optional<UserEntity> userEntity = userRepository.get(new UserPK(serviceEntity, username));
+        if (userEntity.isPresent()) {
+            throw new EntityAlreadyExistsException("user '" + username + "' for service '" + service + "' already exists");
         }
 
-        UserEntity userEntity = userRepository.findByApplicationAndUsername(application, username);
-        if (userEntity != null) {
-            throw new EntityAlreadyExistsException("user '" + username + "' for application '" + application + "' already exists");
-        }
-
-        RoleEntity roleEntity = roleRepository.find(Role.USER);
-        if (roleEntity == null) {
-            throw new EntityNotFoundException("role '" + Role.USER + "' not found");
-        }
+        RoleEntity roleEntity = roleRepository.get(new RolePK(serviceEntity, Role.USER))
+                .orElseThrow(() ->  new EntityNotFoundException("role '" + Role.USER + "' not found"));
 
         List<RoleEntity> roleEntities = Collections.singletonList(roleEntity);
 
         UserEntity createdUserEntity = userRepository.create(
                 new UserEntity(
-                        UUID.randomUUID().toString(),
-                        username,
+                        new UserPK(serviceEntity, username),
                         password,
                         false,
                         roleEntities,
@@ -77,15 +71,15 @@ public class AccountService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public User info(
-            @QueryParam("application") final String application,
+            @QueryParam("service") final String service,
             @QueryParam("username") final String username
     ) throws EntityNotFoundException {
         // get username from token and check permissions
+        ServiceEntity serviceEntity = serviceRepository.get(service)
+                .orElseThrow(() -> new EntityNotFoundException("service '" + service + "' not found"));
 
-        UserEntity userEntity = userRepository.findByApplicationAndUsername(application, username);
-        if (userEntity == null) {
-            throw new EntityNotFoundException("user '" + username + "' for application '" + application + "' not found");
-        }
+        UserEntity userEntity = userRepository.get(new UserPK(serviceEntity, username))
+                .orElseThrow(() -> new EntityNotFoundException("user '" + username + "' for service '" + service + "' not found"));
 
         return UserMapper.MAPPER.toUser(userEntity);
     }
@@ -108,15 +102,16 @@ public class AccountService {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     public void delete(
-            @QueryParam("application") final String application,
+            @QueryParam("service") final String service,
             @QueryParam("username") final String username
     ) throws EntityNotFoundException {
+        ServiceEntity serviceEntity = serviceRepository.get(service)
+                .orElseThrow(() -> new EntityNotFoundException("service '" + service + "' not found"));
+
         // get username from token and check permissions
 
-        UserEntity userEntity = userRepository.findByApplicationAndUsername(application, username);
-        if (userEntity == null) {
-            throw new EntityNotFoundException("user '" + username + "' for application '" + application + "' not found");
-        }
+        UserEntity userEntity = userRepository.get(new UserPK(serviceEntity, username))
+                .orElseThrow(() -> new EntityNotFoundException("user '" + username + "' for service '" + service + "' not found"));
 
         userRepository.delete(userEntity);
     }

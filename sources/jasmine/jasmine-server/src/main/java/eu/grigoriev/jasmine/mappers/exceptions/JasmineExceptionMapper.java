@@ -1,6 +1,6 @@
 package eu.grigoriev.jasmine.mappers.exceptions;
 
-import eu.grigoriev.jasmine.exceptions.JasmineException;
+import eu.grigoriev.jasmine.exceptions.application.JasmineException;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;

@@ -11,7 +11,7 @@ public interface SessionService {
 
     @POST("session")
     Call<Token> create(
-            @Query("application") final String application,
+            @Query("service") final String service,
             @Query("username") final String username,
             @Query("password") final String encodedPassword
     );

@@ -12,14 +12,14 @@ import java.io.IOException;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Application {
+public class Service {
     @NonNull
     private String name;
     private String description;
 
-    public static Application fromString(String jsonRepresentation) {
+    public static Service fromString(String jsonRepresentation) {
         try {
-            return new ObjectMapper().readValue(jsonRepresentation, Application.class);
+            return new ObjectMapper().readValue(jsonRepresentation, Service.class);
         } catch (IOException e) {
             throw new WebApplicationException();
         }

@@ -7,7 +7,7 @@
     <persistence-unit name="JASminePersistenceUnit" transaction-type="JTA">
         <jta-data-source>java:/JASmineDS</jta-data-source>
 
-        <class>eu.grigoriev.jasmine.persistence.ApplicationEntity</class>
+        <class>eu.grigoriev.jasmine.persistence.ServiceEntity</class>
         <class>eu.grigoriev.jasmine.persistence.RoleEntity</class>
         <class>eu.grigoriev.jasmine.persistence.TokenEntity</class>
         <class>eu.grigoriev.jasmine.persistence.UserEntity</class>

@@ -1,20 +1,19 @@
 package eu.grigoriev.jasmine.repositories.common;
 
-import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class JPARepository<Entity, PrimaryKey extends Serializable> implements Repository<Entity, PrimaryKey> {
-    protected final Logger logger = Logger.getLogger(this.getClass());
 
     @PersistenceContext(unitName = "JASminePersistenceUnit")
     protected EntityManager em;
@@ -38,53 +37,75 @@ public abstract class JPARepository<Entity, PrimaryKey extends Serializable> imp
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public Entity create(final Entity entity) {
+    public Entity create(@NotNull final Entity entity) {
         this.em.persist(entity);
         this.em.flush();
+
         return entity;
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public Entity find(final PrimaryKey id) {
-        if (id == null) {
-            return null;
-        } else {
-            return this.em.find(this.entity, id);
-        }
+    public Optional<Entity> get(@NotNull final PrimaryKey primaryKey) {
+        Entity entity = this.em.find(this.entity, primaryKey);
+
+        return Optional.ofNullable(entity);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public List<Entity> findAll() {
-        return (List<Entity>) this.em.createQuery("select e from " + this.entity.getName() + " e").getResultList();
+    public List<Entity> getAll() {
+        return find("SELECT e FROM " + this.entity.getName() + " e");
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public List<Entity> find(@NotNull final String jpqlQuery) {
+        return find(jpqlQuery, null);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public List<Entity> findWithJpqlQuery(String jpqlQuery, Map<String, String> parameters) {
-        Query query = em.createQuery(jpqlQuery);
-        for (String key : parameters.keySet()) {
-            String value = parameters.get(key);
-            query = query.setParameter(key, value);
-        }
+    public List<Entity> find(@NotNull final String jpqlQuery, @Nullable final Map<String, String> jpqlQueryParameters) {
+        Query query = createQueryWithParams(jpqlQuery, jpqlQueryParameters);
+
         return query.getResultList();
     }
 
     @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public Optional<Entity> findUnique(@NotNull final String jpqlQuery) {
+        return findUnique(jpqlQuery, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public Optional<Entity> findUnique(@NotNull final String jpqlQuery, @Nullable final Map<String, String> jpqlQueryParameters) {
+        Query query = createQueryWithParams(jpqlQuery, jpqlQueryParameters);
+
+        try {
+            return Optional.of((Entity) query.getSingleResult());
+        } catch (NoResultException | NonUniqueResultException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public Entity update(final Entity entity) {
+    public Entity update(@NotNull final Entity entity) {
         final Entity updatedEntity = this.em.merge(entity);
         this.em.persist(updatedEntity);
         this.em.flush();
+
         return updatedEntity;
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void delete(final Entity entity) {
+    public void delete(@NotNull final Entity entity) {
         final Entity updatedEntity = this.em.merge(entity);
         this.em.remove(updatedEntity);
         this.em.flush();
@@ -93,13 +114,26 @@ public abstract class JPARepository<Entity, PrimaryKey extends Serializable> imp
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void deleteAll() {
-        int deletedRows = this.em.createQuery("delete from " + this.entity.getName()).executeUpdate();
-        logger.debug(deletedRows + " row(s) successfully deleted");
+        this.em.createQuery("DELETE FROM " + this.entity.getName()).executeUpdate();
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public long count() {
-        return (long) this.em.createQuery("select count(e) from " + this.entity.getName() + " e").getSingleResult();
+        return (long) this.em.createQuery("SELECT count(e) FROM " + this.entity.getName() + " e").getSingleResult();
+    }
+
+    private Query createQueryWithParams(@NotNull String jpqlQuery, @Nullable Map<String, String> jpqlQueryParameters) {
+        Query query = this.em.createQuery(jpqlQuery);
+
+        if (jpqlQueryParameters != null) {
+            for (Map.Entry<String, String> entry : jpqlQueryParameters.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                query.setParameter(key, value);
+            }
+        }
+
+        return query;
     }
 }

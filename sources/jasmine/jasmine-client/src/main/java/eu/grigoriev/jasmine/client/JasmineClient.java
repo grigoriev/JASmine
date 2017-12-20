@@ -20,7 +20,7 @@ import java.util.Base64;
 public class JasmineClient {
 
     public static final String BASE_URL = "http://172.19.0.3:8080/jasmine/";
-    public static final String APPLICATION = "application";
+    public static final String SERVICE = "service";
     public static final String USERNAME = "username";
     public static final String PASSOWRD = "password";
 
@@ -57,17 +57,17 @@ public class JasmineClient {
 
     }
 
-    public Token login(String application, String username, String encodedPassword) throws IOException {
+    public Token login(String service, String username, String encodedPassword) throws IOException {
         SessionService sessionService = retrofit.create(SessionService.class);
 
-        Response<Token> tokenResponse = sessionService.create(application, username, encodedPassword).execute();
+        Response<Token> tokenResponse = sessionService.create(service, username, encodedPassword).execute();
         return tokenResponse.body();
     }
 
-    public User getUserInfo(String application, String username) throws IOException {
+    public User getUserInfo(String service, String username) throws IOException {
         AccountService accountService = retrofit.create(AccountService.class);
 
-        Response<User> userResponse = accountService.info(application, username).execute();
+        Response<User> userResponse = accountService.info(service, username).execute();
         return userResponse.body();
     }
 
@@ -81,8 +81,8 @@ public class JasmineClient {
         String encodedPassword = Base64.getEncoder().encodeToString(PASSOWRD.getBytes(StandardCharsets.UTF_8));
 
         JasmineClient jasmineClient = new JasmineClient(BASE_URL);
-        token = jasmineClient.login(APPLICATION, USERNAME, encodedPassword);
-        User user = jasmineClient.getUserInfo(APPLICATION, USERNAME);
+        token = jasmineClient.login(SERVICE, USERNAME, encodedPassword);
+        User user = jasmineClient.getUserInfo(SERVICE, USERNAME);
         log.info("user = {}", user);
         jasmineClient.logout();
     }

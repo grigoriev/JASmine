@@ -9,14 +9,14 @@ public interface AccountService {
 
     @POST("account")
     Call<User> register(
-            @Query("application") final String application,
+            @Query("service") final String service,
             @Query("username") final String username,
             @Query("password") final String password
     );
 
     @GET("account")
     Call<User> info(
-            @Query("application") final String application,
+            @Query("service") final String service,
             @Query("username") final String username
     );
 
@@ -25,7 +25,7 @@ public interface AccountService {
 
     @DELETE("account")
     Call<ResponseBody> delete(
-            @Query("application") final String application,
+            @Query("service") final String service,
             @Query("username") final String username
     );
 }

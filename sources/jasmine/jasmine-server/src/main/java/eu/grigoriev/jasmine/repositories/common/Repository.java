@@ -1,24 +1,34 @@
 package eu.grigoriev.jasmine.repositories.common;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface Repository<Entity, PrimaryKey extends Serializable> {
 
-    Entity create(Entity newInstance);
+    Entity create(@NotNull Entity newInstance);
 
-    Entity find(PrimaryKey id);
+    Optional<Entity> get(@NotNull PrimaryKey id);
 
-    List<Entity> findAll();
+    List<Entity> getAll();
 
-    Entity update(Entity transientObject);
+    List<Entity> find(@NotNull String jpqlQuery);
 
-    void delete(Entity persistentObject);
+    List<Entity> find(@NotNull String jpqlQuery, @Nullable Map<String, String> jpqlQueryParameters);
+
+    Optional<Entity> findUnique(@NotNull String jpqlQuery);
+
+    Optional<Entity> findUnique(@NotNull String jpqlQuery, @Nullable Map<String, String> jpqlQueryParameters);
+
+    Entity update(@NotNull Entity transientObject);
+
+    void delete(@NotNull Entity persistentObject);
 
     void deleteAll();
 
     long count();
-
-    List<Entity> findWithJpqlQuery(String jpqlQuery, Map<String, String> parameters);
 }
