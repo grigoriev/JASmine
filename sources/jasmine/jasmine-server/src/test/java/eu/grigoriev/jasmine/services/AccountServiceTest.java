@@ -15,7 +15,7 @@ import java.io.IOException;
 @Slf4j
 public class AccountServiceTest {
 
-    public static final int DB_PORT = 3306;
+    public static final int DB_PORT = 5432;
     public static final int SERVICE_PORT = 8080;
 
     public static final String JASMINEDB = "jasminedb";

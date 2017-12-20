@@ -50,7 +50,7 @@ public class AccountService {
         }
 
         RoleEntity roleEntity = roleRepository.get(new RolePK(serviceEntity, Role.USER))
-                .orElseThrow(() ->  new EntityNotFoundException("role '" + Role.USER + "' not found"));
+                .orElseThrow(() -> new EntityNotFoundException("role '" + Role.USER + "' not found"));
 
         List<RoleEntity> roleEntities = Collections.singletonList(roleEntity);
 

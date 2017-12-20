@@ -28,8 +28,8 @@ public class UserPropertyEntity {
 
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name="service_name", referencedColumnName="service_name"),
-            @JoinColumn(name="username", referencedColumnName="username")
+            @JoinColumn(name = "service_name", referencedColumnName = "service_name"),
+            @JoinColumn(name = "username", referencedColumnName = "username")
     })
     private UserEntity userEntity;
 }

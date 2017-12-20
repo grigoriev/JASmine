@@ -2,8 +2,8 @@
 
 set -e
 
-MYSQL_CONNECTOR_JAVA_VERSION="5.1.45"
-MYSQL_CONNECTOR_JAVA_JAR="mysql-connector-java-$MYSQL_CONNECTOR_JAVA_VERSION.jar"
+POSTGRES_CONNECTOR_VERSION="42.1.4"
+POSTGRES_CONNECTOR_JAR="postgresql-$POSTGRES_CONNECTOR_VERSION.jar"
 
 HOME="/opt/jboss"
 WILDFLY_HOME="$HOME/wildfly"
@@ -16,8 +16,9 @@ DIST_DELIVERY="$DIST/delivery"
 
 DATASOURCE_NAME="JASmineDS"
 
-if [ ! -f "$WILDFLY_HOME/$MYSQL_CONNECTOR_JAVA_JAR" ]; then
-    curl -sfL -o "$WILDFLY_HOME/$MYSQL_CONNECTOR_JAVA_JAR" "https://repo1.maven.org/maven2/mysql/mysql-connector-java/$MYSQL_CONNECTOR_JAVA_VERSION/$MYSQL_CONNECTOR_JAVA_JAR"
+echo "downloading https://jdbc.postgresql.org/download/$POSTGRES_CONNECTOR_JAR..."
+if [ ! -f "$WILDFLY_HOME/$POSTGRES_CONNECTOR_JAR" ]; then
+    curl -sfL -o "$WILDFLY_HOME/$POSTGRES_CONNECTOR_JAR" "https://jdbc.postgresql.org/download/$POSTGRES_CONNECTOR_JAR"
 fi
 
 until "$JBOSS_CLI" -c --command=":read-attribute(name=server-state)" 2> /dev/null | grep -q "running" ; do
@@ -25,24 +26,24 @@ until "$JBOSS_CLI" -c --command=":read-attribute(name=server-state)" 2> /dev/nul
   sleep 1
 done
 
-MYSQL_MODULE_ADDED="$HOME/.mysql-module-added"
+POSTGRES_MODULE_ADDED="$HOME/.postgres-module-added"
 JDBC_DRIVER_REGISTERED="$HOME/.jdbc-driver-registered"
 DATASOURCE_ADDED="$HOME/.datasource-added"
 
-if [ ! -f "$MYSQL_MODULE_ADDED" ]; then
-    "$JBOSS_CLI" -c --command="module add --name=com.mysql --resources=$WILDFLY_HOME/$MYSQL_CONNECTOR_JAVA_JAR --dependencies=javax.api,javax.transaction.api" && touch "$MYSQL_MODULE_ADDED"
+if [ ! -f "$POSTGRES_MODULE_ADDED" ]; then
+    "$JBOSS_CLI" -c --command="module add --name=org.postgres --resources=$WILDFLY_HOME/$POSTGRES_CONNECTOR_JAR --dependencies=javax.api,javax.transaction.api" && touch "$POSTGRES_MODULE_ADDED"
 else
-    echo "MySQL module has been already added"
+    echo "Postgres module has been already added"
 fi
 
 if [ ! -f "$JDBC_DRIVER_REGISTERED" ]; then
-    "$JBOSS_CLI" -c --command="/subsystem=datasources/jdbc-driver=mysql:add(driver-name=mysql,driver-module-name=com.mysql)" && touch "$JDBC_DRIVER_REGISTERED"
+    "$JBOSS_CLI" -c --command="/subsystem=datasources/jdbc-driver=postgres:add(driver-name=postgres,driver-module-name=org.postgres,driver-class-name=org.postgresql.Driver)" && touch "$JDBC_DRIVER_REGISTERED"
 else
-    echo "MySQL JDBC driver has been already registered"
+    echo "Postgres JDBC driver has been already registered"
 fi
 
 if [ ! -f "$DATASOURCE_ADDED" ]; then
-    "$JBOSS_CLI" -c --command="data-source add --jndi-name=java:/$DATASOURCE_NAME --name=$DATASOURCE_NAME --connection-url=jdbc:mysql://$MYSQL_HOST:3306/$MYSQL_DATABASE --driver-name=mysql --user-name=$MYSQL_USER --password=$MYSQL_PASSWORD" && touch "$DATASOURCE_ADDED"
+    "$JBOSS_CLI" -c --command="data-source add --jndi-name=java:/$DATASOURCE_NAME --name=$DATASOURCE_NAME --connection-url=jdbc:postgresql://$POSTGRES_HOST:5432/$POSTGRES_DB --driver-name=postgres --user-name=$POSTGRES_USER --password=$POSTGRES_PASSWORD" && touch "$DATASOURCE_ADDED"
 else
     echo "$DATASOURCE_NAME has been already added"
 fi

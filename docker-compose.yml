@@ -22,10 +22,10 @@ services:
     ]
 
   jasmine-database:
-    image: mysql:5.7
+    image: postgres:10.1
     container_name: jasmine-db-dev
     hostname: jasmine-db-dev
     ports:
-      - "3306:3306"
+      - "5432:5432"
     env_file:
       - docker/.env-database
