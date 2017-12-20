@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -27,5 +26,5 @@ public class TokenEntity {
             @JoinColumn(name = "service_name", referencedColumnName = "service_name"),
             @JoinColumn(name = "username", referencedColumnName = "username")
     })
-    private UserEntity userEntity;
+    private AccountEntity userEntity;
 }

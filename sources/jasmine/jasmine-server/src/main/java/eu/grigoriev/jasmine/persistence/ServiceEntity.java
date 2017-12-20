@@ -7,9 +7,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -27,7 +25,7 @@ public class ServiceEntity {
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "id.serviceEntity", cascade = CascadeType.ALL)
-    private Collection<UserEntity> userEntities;
+    private Collection<AccountEntity> accountEntities;
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "id.serviceEntity", cascade = CascadeType.ALL)

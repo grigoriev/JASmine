@@ -13,7 +13,6 @@ import java.io.IOException;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Service {
-    @NonNull
     private String name;
     private String description;
 

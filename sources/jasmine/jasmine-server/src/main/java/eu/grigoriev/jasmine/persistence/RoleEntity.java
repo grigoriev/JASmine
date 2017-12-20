@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -27,5 +26,5 @@ public class RoleEntity {
     private String description;
 
     @ManyToMany(mappedBy = "roleEntities")
-    private Collection<UserEntity> userEntities;
+    private Collection<AccountEntity> userEntities;
 }

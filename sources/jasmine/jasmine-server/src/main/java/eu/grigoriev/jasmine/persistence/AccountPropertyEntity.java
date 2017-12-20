@@ -5,14 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_property")
-public class UserPropertyEntity {
+@Table(name = "account_property")
+public class AccountPropertyEntity {
 
     @Id
     @Column(name = "id", nullable = false)
@@ -31,5 +30,5 @@ public class UserPropertyEntity {
             @JoinColumn(name = "service_name", referencedColumnName = "service_name"),
             @JoinColumn(name = "username", referencedColumnName = "username")
     })
-    private UserEntity userEntity;
+    private AccountEntity accountEntity;
 }

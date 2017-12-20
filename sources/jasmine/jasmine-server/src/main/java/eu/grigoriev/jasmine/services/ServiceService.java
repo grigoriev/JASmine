@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @Slf4j
 @Path("/service")
-public class ApplicationService {
+public class ServiceService {
 
     @EJB
     private ServiceRepository serviceRepository;
@@ -29,7 +29,7 @@ public class ApplicationService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Service addService(final Service service) throws EntityAlreadyExistsException {
-        Optional<ServiceEntity> optionalApplicationEntity = serviceRepository.findUnique(service.getName());
+        Optional<ServiceEntity> optionalApplicationEntity = serviceRepository.get(service.getName());
 
         if (optionalApplicationEntity.isPresent()) {
             throw new EntityAlreadyExistsException("service '" + service.getName() + "' already exists");
@@ -53,7 +53,7 @@ public class ApplicationService {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Service update(final Service service) throws EntityNotFoundException {
-        ServiceEntity serviceEntity = serviceRepository.findUnique(service.getName())
+        ServiceEntity serviceEntity = serviceRepository.get(service.getName())
                 .orElseThrow(() -> new EntityNotFoundException("service '" + service.getName() + "' not found"));
 
         ServiceEntity updatedServiceEntity = serviceRepository.update(ServiceMapper.MAPPER.toServiceEntity(service));
@@ -64,7 +64,7 @@ public class ApplicationService {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     public void delete(final Service service) throws EntityNotFoundException {
-        ServiceEntity serviceEntity = serviceRepository.findUnique(service.getName())
+        ServiceEntity serviceEntity = serviceRepository.get(service.getName())
                 .orElseThrow(() -> new EntityNotFoundException("service '" + service.getName() + "' not found"));
 
         serviceRepository.delete(serviceEntity);

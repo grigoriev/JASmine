@@ -20,35 +20,35 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="002-create-table-user" author="Sergey Grigoriev">
-        <createTable tableName="user">
+    <changeSet id="002-create-table-account" author="Sergey Grigoriev">
+        <createTable tableName="account">
             <column name="service_name" type="varchar(255)"/>
             <column name="username" type="varchar(255)"/>
             <column name="password" type="varchar(255)"/>
             <column name="active" type="boolean" defaultValueBoolean="true"/>
         </createTable>
 
-        <addPrimaryKey tableName="user" columnNames="service_name, username"/>
+        <addPrimaryKey tableName="account" columnNames="service_name, username"/>
 
-        <addNotNullConstraint tableName="user" columnName="service_name" columnDataType="varchar(255)"/>
-        <addNotNullConstraint tableName="user" columnName="username" columnDataType="varchar(255)"/>
-        <addNotNullConstraint tableName="user" columnName="password" columnDataType="varchar(255)"/>
+        <addNotNullConstraint tableName="account" columnName="service_name" columnDataType="varchar(255)"/>
+        <addNotNullConstraint tableName="account" columnName="username" columnDataType="varchar(255)"/>
+        <addNotNullConstraint tableName="account" columnName="password" columnDataType="varchar(255)"/>
 
         <addForeignKeyConstraint
-                baseTableName="user"
+                baseTableName="account"
                 baseColumnNames="service_name"
-                constraintName="fk#user:service_name"
+                constraintName="fk#account:service_name"
                 referencedTableName="service"
                 referencedColumnNames="name"
         />
 
         <rollback>
-            <dropTable tableName="user"/>
+            <dropTable tableName="account"/>
         </rollback>
     </changeSet>
 
-    <changeSet id="003-create-table-user_property" author="Sergey Grigoriev">
-        <createTable tableName="user_property">
+    <changeSet id="003-create-table-account_property" author="Sergey Grigoriev">
+        <createTable tableName="account_property">
             <column name="id" type="bigint"/>
             <column name="service_name" type="varchar(255)"/>
             <column name="username" type="varchar(255)"/>
@@ -56,26 +56,26 @@
             <column name="value" type="varchar(255)"/>
         </createTable>
 
-        <addPrimaryKey tableName="user_property" columnNames="id"/>
+        <addPrimaryKey tableName="account_property" columnNames="id"/>
 
-        <addAutoIncrement tableName="user_property" columnName="id" columnDataType="bigint"/>
+        <addAutoIncrement tableName="account_property" columnName="id" columnDataType="bigint"/>
 
-        <addNotNullConstraint tableName="user_property" columnName="id" columnDataType="bigint"/>
-        <addNotNullConstraint tableName="user_property" columnName="service_name" columnDataType="varchar(255)"/>
-        <addNotNullConstraint tableName="user_property" columnName="username" columnDataType="varchar(255)"/>
-        <addNotNullConstraint tableName="user_property" columnName="property" columnDataType="varchar(255)"/>
-        <addNotNullConstraint tableName="user_property" columnName="value" columnDataType="varchar(255)"/>
+        <addNotNullConstraint tableName="account_property" columnName="id" columnDataType="bigint"/>
+        <addNotNullConstraint tableName="account_property" columnName="service_name" columnDataType="varchar(255)"/>
+        <addNotNullConstraint tableName="account_property" columnName="username" columnDataType="varchar(255)"/>
+        <addNotNullConstraint tableName="account_property" columnName="property" columnDataType="varchar(255)"/>
+        <addNotNullConstraint tableName="account_property" columnName="value" columnDataType="varchar(255)"/>
 
         <addForeignKeyConstraint
-                baseTableName="user_property"
+                baseTableName="account_property"
                 baseColumnNames="service_name, username"
-                constraintName="fk#user_property:user_id"
-                referencedTableName="user"
+                constraintName="fk#account_property:account_id"
+                referencedTableName="account"
                 referencedColumnNames="service_name, username"
         />
 
         <rollback>
-            <dropTable tableName="user_property"/>
+            <dropTable tableName="account_property"/>
         </rollback>
     </changeSet>
 
@@ -106,57 +106,57 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="005-many-to-many-user_role" author="Sergey Grigoriev">
-        <createTable tableName="user_role">
+    <changeSet id="005-many-to-many-account_role" author="Sergey Grigoriev">
+        <createTable tableName="account_role">
             <column name="id" type="bigint"/>
-            <column name="user_service_name" type="varchar(255)"/>
+            <column name="account_service_name" type="varchar(255)"/>
             <column name="username" type="varchar(255)"/>
             <column name="role_service_name" type="varchar(255)"/>
             <column name="role" type="varchar(255)"/>
         </createTable>
 
-        <addPrimaryKey tableName="user_role" columnNames="id"/>
+        <addPrimaryKey tableName="account_role" columnNames="id"/>
 
-        <addAutoIncrement tableName="user_role" columnName="id" columnDataType="bigint"/>
+        <addAutoIncrement tableName="account_role" columnName="id" columnDataType="bigint"/>
 
-        <addNotNullConstraint tableName="user_role" columnName="id" columnDataType="bigint"/>
-        <addNotNullConstraint tableName="user_role" columnName="user_service_name" columnDataType="varchar(255)"/>
-        <addNotNullConstraint tableName="user_role" columnName="username" columnDataType="varchar(255)"/>
-        <addNotNullConstraint tableName="user_role" columnName="role_service_name" columnDataType="varchar(255)"/>
-        <addNotNullConstraint tableName="user_role" columnName="role" columnDataType="varchar(255)"/>
+        <addNotNullConstraint tableName="account_role" columnName="id" columnDataType="bigint"/>
+        <addNotNullConstraint tableName="account_role" columnName="account_service_name" columnDataType="varchar(255)"/>
+        <addNotNullConstraint tableName="account_role" columnName="username" columnDataType="varchar(255)"/>
+        <addNotNullConstraint tableName="account_role" columnName="role_service_name" columnDataType="varchar(255)"/>
+        <addNotNullConstraint tableName="account_role" columnName="role" columnDataType="varchar(255)"/>
 
         <addForeignKeyConstraint
-                baseTableName="user_role"
-                baseColumnNames="user_service_name, username"
-                constraintName="fk#user_role:user_id"
-                referencedTableName="user"
+                baseTableName="account_role"
+                baseColumnNames="account_service_name, username"
+                constraintName="fk#account_role:account_id"
+                referencedTableName="account"
                 referencedColumnNames="service_name, username"
         />
 
         <addForeignKeyConstraint
-                baseTableName="user_role"
+                baseTableName="account_role"
                 baseColumnNames="role_service_name, role"
-                constraintName="fk#user_role:role_id"
+                constraintName="fk#account_role:role_id"
                 referencedTableName="role"
                 referencedColumnNames="service_name, role"
         />
 
         <rollback>
-            <dropTable tableName="user_role"/>
+            <dropTable tableName="account_role"/>
         </rollback>
     </changeSet>
 
-    <changeSet id="006-create-check-trigger-user_role" author="Sergey Grigoriev">
+    <changeSet id="006-create-check-account_role" author="Sergey Grigoriev">
         <sql>
             <![CDATA[
-                ALTER TABLE user_role ADD CONSTRAINT user_role_service_name_check CHECK (
-                  user_service_name = role_service_name
+                ALTER TABLE account_role ADD CONSTRAINT account_role_service_name_check CHECK (
+                  account_service_name = role_service_name
                 );
             ]]>
         </sql>
 
         <rollback>
-            <dropTable tableName="user_role"/>
+            <dropTable tableName="account_role"/>
         </rollback>
     </changeSet>
 
@@ -178,8 +178,8 @@
         <addForeignKeyConstraint
                 baseTableName="token"
                 baseColumnNames="service_name, username"
-                constraintName="fk#token:user_id"
-                referencedTableName="user"
+                constraintName="fk#token:account_id"
+                referencedTableName="account"
                 referencedColumnNames="service_name, username"
         />
 

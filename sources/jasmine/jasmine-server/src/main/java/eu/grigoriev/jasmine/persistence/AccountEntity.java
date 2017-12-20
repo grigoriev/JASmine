@@ -11,11 +11,11 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user")
-public class UserEntity {
+@Table(name = "account")
+public class AccountEntity {
 
     @EmbeddedId
-    private UserPK id;
+    private AccountPK id;
 
     @Basic
     @Column(name = "password", nullable = false, length = 255)
@@ -27,9 +27,9 @@ public class UserEntity {
 
     @ManyToMany
     @JoinTable(
-            name = "user_role",
+            name = "account_role",
             joinColumns = {
-                    @JoinColumn(name = "user_service_name", referencedColumnName = "service_name"),
+                    @JoinColumn(name = "account_service_name", referencedColumnName = "service_name"),
                     @JoinColumn(name = "username", referencedColumnName = "username")
             },
             inverseJoinColumns = {
@@ -39,6 +39,6 @@ public class UserEntity {
     )
     private Collection<RoleEntity> roleEntities;
 
-    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Collection<UserPropertyEntity> userPropertyEntities;
+    @OneToMany(mappedBy = "accountEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Collection<AccountPropertyEntity> userPropertyEntities;
 }

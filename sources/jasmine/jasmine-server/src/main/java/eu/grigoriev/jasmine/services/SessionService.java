@@ -4,13 +4,13 @@ import eu.grigoriev.jasmine.exceptions.application.EntityNotFoundException;
 import eu.grigoriev.jasmine.exceptions.application.InvalidCredentialsException;
 import eu.grigoriev.jasmine.mappers.dto.TokenMapper;
 import eu.grigoriev.jasmine.model.Token;
+import eu.grigoriev.jasmine.persistence.AccountEntity;
+import eu.grigoriev.jasmine.persistence.AccountPK;
 import eu.grigoriev.jasmine.persistence.ServiceEntity;
 import eu.grigoriev.jasmine.persistence.TokenEntity;
-import eu.grigoriev.jasmine.persistence.UserEntity;
-import eu.grigoriev.jasmine.persistence.UserPK;
+import eu.grigoriev.jasmine.repositories.AccountRepository;
 import eu.grigoriev.jasmine.repositories.ServiceRepository;
 import eu.grigoriev.jasmine.repositories.TokenRepository;
-import eu.grigoriev.jasmine.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.security.PermitAll;
@@ -29,7 +29,7 @@ public class SessionService {
     private ServiceRepository serviceRepository;
 
     @EJB
-    private UserRepository userRepository;
+    private AccountRepository accountRepository;
 
     @EJB
     private TokenRepository tokenRepository;
@@ -44,7 +44,7 @@ public class SessionService {
         ServiceEntity serviceEntity = serviceRepository.get(service)
                 .orElseThrow(() -> new EntityNotFoundException("service '" + service + "' not found"));
 
-        UserEntity userEntity = userRepository.get(new UserPK(serviceEntity, username))
+        AccountEntity userEntity = accountRepository.get(new AccountPK(serviceEntity, username))
                 .orElseThrow(() -> new InvalidCredentialsException("invalid credentials provided"));
 
         String password = new String(Base64.getDecoder().decode(encodedPassword), StandardCharsets.UTF_8);

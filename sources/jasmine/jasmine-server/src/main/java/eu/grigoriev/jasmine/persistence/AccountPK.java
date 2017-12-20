@@ -12,7 +12,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class UserPK implements Serializable {
+public class AccountPK implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "service_name")

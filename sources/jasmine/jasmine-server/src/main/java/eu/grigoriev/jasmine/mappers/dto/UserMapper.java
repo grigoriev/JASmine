@@ -1,7 +1,7 @@
 package eu.grigoriev.jasmine.mappers.dto;
 
 import eu.grigoriev.jasmine.model.User;
-import eu.grigoriev.jasmine.persistence.UserEntity;
+import eu.grigoriev.jasmine.persistence.AccountEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -9,7 +9,7 @@ import org.mapstruct.factory.Mappers;
 public interface UserMapper {
     UserMapper MAPPER = Mappers.getMapper(UserMapper.class);
 
-    User toUser(UserEntity userEntity);
+    User toUser(AccountEntity userEntity);
 
-    UserEntity toUserEntity(User user);
+    AccountEntity toUserEntity(User user);
 }

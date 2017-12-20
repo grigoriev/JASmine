@@ -6,9 +6,9 @@ import eu.grigoriev.jasmine.exceptions.application.EntityNotFoundException;
 import eu.grigoriev.jasmine.mappers.dto.UserMapper;
 import eu.grigoriev.jasmine.model.User;
 import eu.grigoriev.jasmine.persistence.*;
-import eu.grigoriev.jasmine.repositories.ServiceRepository;
+import eu.grigoriev.jasmine.repositories.AccountRepository;
 import eu.grigoriev.jasmine.repositories.RoleRepository;
-import eu.grigoriev.jasmine.repositories.UserRepository;
+import eu.grigoriev.jasmine.repositories.ServiceRepository;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.security.PermitAll;
@@ -19,7 +19,6 @@ import javax.ws.rs.core.MediaType;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Slf4j
 @Path("/account")
@@ -29,7 +28,7 @@ public class AccountService {
     private ServiceRepository serviceRepository;
 
     @EJB
-    private UserRepository userRepository;
+    private AccountRepository accountRepository;
 
     @EJB
     private RoleRepository roleRepository;
@@ -44,7 +43,7 @@ public class AccountService {
         ServiceEntity serviceEntity = serviceRepository.get(service)
                 .orElseThrow(() -> new EntityNotFoundException("service '" + service + "' not found"));
 
-        Optional<UserEntity> userEntity = userRepository.get(new UserPK(serviceEntity, username));
+        Optional<AccountEntity> userEntity = accountRepository.get(new AccountPK(serviceEntity, username));
         if (userEntity.isPresent()) {
             throw new EntityAlreadyExistsException("user '" + username + "' for service '" + service + "' already exists");
         }
@@ -54,9 +53,9 @@ public class AccountService {
 
         List<RoleEntity> roleEntities = Collections.singletonList(roleEntity);
 
-        UserEntity createdUserEntity = userRepository.create(
-                new UserEntity(
-                        new UserPK(serviceEntity, username),
+        AccountEntity createdUserEntity = accountRepository.create(
+                new AccountEntity(
+                        new AccountPK(serviceEntity, username),
                         password,
                         false,
                         roleEntities,
@@ -78,7 +77,7 @@ public class AccountService {
         ServiceEntity serviceEntity = serviceRepository.get(service)
                 .orElseThrow(() -> new EntityNotFoundException("service '" + service + "' not found"));
 
-        UserEntity userEntity = userRepository.get(new UserPK(serviceEntity, username))
+        AccountEntity userEntity = accountRepository.get(new AccountPK(serviceEntity, username))
                 .orElseThrow(() -> new EntityNotFoundException("user '" + username + "' for service '" + service + "' not found"));
 
         return UserMapper.MAPPER.toUser(userEntity);
@@ -91,9 +90,9 @@ public class AccountService {
     public User update(final User user) {
         // get username from token and check permissions
 
-        UserEntity userEntity = UserMapper.MAPPER.toUserEntity(user);
+        AccountEntity userEntity = UserMapper.MAPPER.toUserEntity(user);
 
-        UserEntity updatedUserEntity = userRepository.update(userEntity);
+        AccountEntity updatedUserEntity = accountRepository.update(userEntity);
 
         return UserMapper.MAPPER.toUser(updatedUserEntity);
     }
@@ -110,9 +109,9 @@ public class AccountService {
 
         // get username from token and check permissions
 
-        UserEntity userEntity = userRepository.get(new UserPK(serviceEntity, username))
+        AccountEntity userEntity = accountRepository.get(new AccountPK(serviceEntity, username))
                 .orElseThrow(() -> new EntityNotFoundException("user '" + username + "' for service '" + service + "' not found"));
 
-        userRepository.delete(userEntity);
+        accountRepository.delete(userEntity);
     }
 }

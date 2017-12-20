@@ -11,7 +11,7 @@
         <class>eu.grigoriev.jasmine.persistence.RoleEntity</class>
         <class>eu.grigoriev.jasmine.persistence.TokenEntity</class>
         <class>eu.grigoriev.jasmine.persistence.UserEntity</class>
-        <class>eu.grigoriev.jasmine.persistence.UserPropertyEntity</class>
+        <class>eu.grigoriev.jasmine.persistence.AccountPropertyEntity</class>
 
         <properties>
             <property name="hbm2ddl.auto" value="validate"/>
