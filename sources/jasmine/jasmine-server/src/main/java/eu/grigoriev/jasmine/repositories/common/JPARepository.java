@@ -52,7 +52,6 @@ public abstract class JPARepository<Entity, PrimaryKey extends Serializable> imp
         return Optional.ofNullable(entity);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public List<Entity> getAll() {
@@ -71,7 +70,7 @@ public abstract class JPARepository<Entity, PrimaryKey extends Serializable> imp
     public List<Entity> find(@NotNull final String jpqlQuery, @Nullable final Map<String, String> jpqlQueryParameters) {
         Query query = createQueryWithParams(jpqlQuery, jpqlQueryParameters);
 
-        return query.getResultList();
+        return (List<Entity>) query.getResultList();
     }
 
     @Override
