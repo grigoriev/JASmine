@@ -3,7 +3,7 @@ version: "3.4"
 services:
 
   jasmine-service:
-    image: jboss/wildfly
+    image: jboss/wildfly:11.0.0.Final
     container_name: jasmine-service-dev
     hostname: jasmine-service-dev
     depends_on:
